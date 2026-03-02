@@ -1,145 +1,641 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HENING4D - Slot gacor</title>
-
-<!-- Meta Pixel Code -->
-<script>
-!function(f,b,e,v,n,t,s)
-{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];
-s.parentNode.insertBefore(t,s)}(window, document,'script',
-'https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', '2763005137368166');
-fbq('track', 'PageView');
-</script>
-<noscript>
-<img height="1" width="1" style="display:none"
-src="https://www.facebook.com/tr?id=2763005137368166&ev=PageView&noscript=1"/>
-</noscript>
-<!-- End Meta Pixel Code -->
-
-<style>
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-    color: #ffffff;
-    text-align: center;
-}
-
-.container {
-    max-width: 1000px;
-    margin: auto;
-    padding: 40px 20px;
-}
-
-.logo {
-    font-size: 42px;
-    font-weight: bold;
-    color: gold;
-    margin-bottom: 10px;
-}
-
-h1 {
-    font-size: 28px;
-    margin: 10px 0;
-}
-
-p {
-    color: #dcdcdc;
-    font-size: 16px;
-}
-
-.buttons {
-    margin-top: 25px;
-}
-
-.btn {
-    padding: 14px 30px;
-    margin: 10px;
-    border-radius: 30px;
-    text-decoration: none;
-    font-weight: bold;
-    display: inline-block;
-    transition: 0.3s ease;
-}
-
-.login {
-    background: #3a3a3a;
-    color: #fff;
-}
-
-.login:hover {
-    background: #555;
-}
-
-.daftar {
-    background: gold;
-    color: #000;
-}
-
-.daftar:hover {
-    background: orange;
-}
-
-.section {
-    margin-top: 60px;
-}
-
-.card {
-    background: rgba(255,255,255,0.05);
-    padding: 20px;
-    border-radius: 12px;
-    margin: 15px 0;
-}
-
-.footer {
-    margin-top: 60px;
-    font-size: 14px;
-    color: #aaa;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tetris · HTML canvas</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+        }
+        body {
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(145deg, #1a2639 0%, #0d1b2a 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', 'Courier New', monospace;
+        }
+        .game-container {
+            background: #0f172a;
+            border-radius: 2rem;
+            padding: 2rem 2rem 2rem 2rem;
+            box-shadow: 0 20px 30px rgba(0,0,0,0.8), inset 2px 2px 5px #4f5b73;
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            border: 2px solid #3b4b66;
+        }
+        .play-area {
+            text-align: center;
+        }
+        canvas#board {
+            display: block;
+            background-color: #0b121e;
+            border-radius: 1.2rem;
+            box-shadow: 0 0 0 3px #2e3b4e, inset 0 0 0 3px #1e2a3a;
+            width: 300px;
+            height: 600px;
+        }
+        .info-panel {
+            background: #1b2537;
+            border-radius: 1.5rem;
+            padding: 1.8rem 1.5rem;
+            box-shadow: inset 0 0 10px #090e17, 0 10px 10px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            min-width: 170px;
+            border: 1px solid #3c4c66;
+        }
+        .next-piece-box {
+            background: #0e1624;
+            border-radius: 1.8rem;
+            padding: 1.5rem 0.5rem;
+            width: 100%;
+            text-align: center;
+            border: 2px solid #31435e;
+        }
+        .next-piece-label {
+            color: #b7c9e2;
+            font-weight: 600;
+            letter-spacing: 2px;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            text-shadow: 0 2px 0 #03070e;
+            margin-bottom: 1rem;
+        }
+        canvas#nextCanvas {
+            background-color: #0b121e;
+            border-radius: 1rem;
+            box-shadow: 0 0 0 2px #31435e;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto;
+        }
+        .score-board {
+            background: #111b2b;
+            width: 100%;
+            border-radius: 3rem;
+            padding: 1rem 1rem;
+            margin: 1.2rem 0;
+            text-align: center;
+            border: 2px solid #3b506e;
+        }
+        .score-title {
+            color: #9eb3d0;
+            font-size: 1rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+        #scoreValue {
+            color: #f0e9d8;
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1.2;
+            text-shadow: 0 0 10px #90c0ff;
+        }
+        .controls {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            gap: 0.7rem;
+        }
+        button {
+            background: #26334d;
+            border: none;
+            font-weight: bold;
+            font-size: 1.3rem;
+            padding: 0.8rem 0.5rem;
+            border-radius: 3rem;
+            color: #d6e3ff;
+            box-shadow: 0 6px 0 #0c1320, 0 8px 10px black;
+            cursor: pointer;
+            transition: 0.07s ease;
+            font-family: inherit;
+            letter-spacing: 1px;
+            border: 1px solid #4e6591;
+        }
+        button:active {
+            transform: translateY(5px);
+            box-shadow: 0 1px 0 #0c1320, 0 5px 10px black;
+        }
+        .arrow-keys {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        .key {
+            background: #1f2b3f;
+            border-radius: 1.2rem;
+            padding: 0.5rem 1rem;
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #c5d5f0;
+            box-shadow: inset 0 -3px 0 #0d1423;
+            border: 1px solid #4b6085;
+            min-width: 60px;
+            text-align: center;
+        }
+        .footer-note {
+            color: #758aa8;
+            font-size: 0.8rem;
+            margin-top: 1rem;
+            text-align: center;
+        }
+    </style>
 </head>
-
 <body>
-
-<div class="container">
-
-    <div class="logo">HENING4D</div>
-
-    <h1>SITUS SLOT TERGACOR MODAL RECEH JP JUTAAN</h1>
-    <p>Pengalaman bermain cepat, stabil, dan penuh promo spesial setiap hari.</p>
-
-    <div class="buttons">
-        <a href="https://ini.heningiya.mom/" class="btn login">LOGIN</a>
-        <a href="https://ini.heningiya.mom/" class="btn daftar">DAFTAR SEKARANG</a>
+<div class="game-container">
+    <!-- area utama papan -->
+    <div class="play-area">
+        <canvas id="board" width="300" height="600"></canvas>
     </div>
 
-    <div class="section">
-        <h2>Keunggulan HENING4D</h2>
-        <div class="card">⚡ Sistem Cepat & Stabil</div>
-        <div class="card">🎁 Bonus & Event Rutin</div>
-        <div class="card">💰 Modal Terjangkau</div>
-        <div class="card">🕐 Support 24 Jam</div>
-    </div>
+    <!-- panel kanan: next, score, tombol -->
+    <div class="info-panel">
+        <div class="next-piece-box">
+            <div class="next-piece-label">▶ next</div>
+            <canvas id="nextCanvas" width="120" height="120"></canvas>
+        </div>
 
-    <div class="section">
-        <h2>Promo Member Baru</h2>
-        <p>Dapatkan promo eksklusif untuk pendaftaran pertama hari ini.</p>
-        <a href="https://ini.heningiya.mom/" class="btn daftar">KLAIM BONUS</a>
-    </div>
+        <div class="score-board">
+            <div class="score-title">SCORE</div>
+            <div id="scoreValue">0</div>
+        </div>
 
-    <div class="footer">
-        © 2026 HENING4D. All Rights Reserved.
+        <div class="controls">
+            <button id="newGameBtn">🔄 NEW GAME</button>
+            <div class="arrow-keys">
+                <span class="key">←</span>
+                <span class="key">→</span>
+                <span class="key">↓</span>
+                <span class="key">↑</span>
+            </div>
+            <div style="font-size:0.9rem; color:#9bb2d5;">[ spasi : rotasi ]</div>
+        </div>
+        <div class="footer-note">← → ↓ ⬇️  |  ⬆️ rotasi</div>
     </div>
-
 </div>
 
+<script>
+    (function() {
+        // ---------- KONSTANTA ----------
+        const COLS = 10;
+        const ROWS = 20;
+        const BLOCK_SIZE = 30;        // board 300x600
+        const NEXT_SIZE = 24;          // ukuran blok di kanvas next (120/5 ≈24, tapi kita atur manual)
+
+        const canvas = document.getElementById('board');
+        const ctx = canvas.getContext('2d');
+        const nextCanvas = document.getElementById('nextCanvas');
+        const nextCtx = nextCanvas.getContext('2d');
+        const scoreSpan = document.getElementById('scoreValue');
+
+        // ---------- BENTUK TETROMINO (standar) ----------
+        const SHAPES = [
+            {   // I
+                matrix: [
+                    [0,0,0,0],
+                    [1,1,1,1],
+                    [0,0,0,0],
+                    [0,0,0,0]
+                ],
+                color: '#3cc7d6' // cyan
+            },
+            {   // O
+                matrix: [
+                    [0,0,0,0],
+                    [0,1,1,0],
+                    [0,1,1,0],
+                    [0,0,0,0]
+                ],
+                color: '#f7e476' // kuning
+            },
+            {   // T
+                matrix: [
+                    [0,0,0,0],
+                    [0,1,0,0],
+                    [1,1,1,0],
+                    [0,0,0,0]
+                ],
+                color: '#b484e0' // ungu
+            },
+            {   // S
+                matrix: [
+                    [0,0,0,0],
+                    [0,1,1,0],
+                    [1,1,0,0],
+                    [0,0,0,0]
+                ],
+                color: '#6fcf97' // hijau
+            },
+            {   // Z
+                matrix: [
+                    [0,0,0,0],
+                    [1,1,0,0],
+                    [0,1,1,0],
+                    [0,0,0,0]
+                ],
+                color: '#e6675a' // merah salmon
+            },
+            {   // J
+                matrix: [
+                    [0,0,0,0],
+                    [1,0,0,0],
+                    [1,1,1,0],
+                    [0,0,0,0]
+                ],
+                color: '#5b8cff' // biru
+            },
+            {   // L
+                matrix: [
+                    [0,0,0,0],
+                    [0,0,1,0],
+                    [1,1,1,0],
+                    [0,0,0,0]
+                ],
+                color: '#fca65b' // oranye
+            }
+        ];
+
+        // ---------- STATE GAME ----------
+        let board = [];                 // 2D array [ROWS][COLS] (0 = kosong, >0 = warna)
+        let currentPiece = null;        // { matrix, color, x, y }
+        let nextPiece = null;           
+        let score = 0;
+        let gameOver = false;
+        let gameInterval = null;
+        const BASE_INTERVAL = 450;       // ms per drop
+
+        // inisialisasi board dengan nol
+        function initBoard() {
+            board = Array(ROWS).fill().map(() => Array(COLS).fill(0));
+        }
+
+        // random piece (ambil objek shape)
+        function randomPiece() {
+            const idx = Math.floor(Math.random() * SHAPES.length);
+            const shape = SHAPES[idx];
+            return {
+                matrix: shape.matrix.map(row => [...row]), // copy
+                color: shape.color
+            };
+        }
+
+        // set next piece (panggil saat game mulai / butuh next baru)
+        function generateNextPiece() {
+            if (!nextPiece) {
+                nextPiece = randomPiece();
+            }
+            return nextPiece;
+        }
+
+        // spawn piece baru dari next, lalu create next random
+        function spawnNewPiece() {
+            if (!nextPiece) {
+                nextPiece = randomPiece();
+            }
+            // piece aktif = nextPiece
+            currentPiece = {
+                matrix: nextPiece.matrix.map(row => [...row]), // copy dalam
+                color: nextPiece.color,
+                x: Math.floor((COLS - nextPiece.matrix[0].length) / 2),
+                y: 0
+            };
+            // buat next piece baru
+            nextPiece = randomPiece();
+
+            // langsung cek collision saat spawn (kalau langsung kena = game over)
+            if (collision(currentPiece.matrix, currentPiece.x, currentPiece.y)) {
+                gameOver = true;
+                clearInterval(gameInterval);
+                gameInterval = null;
+            }
+        }
+
+        // cek tabrakan antara piece matrix di posisi (offX, offY) dengan board
+        function collision(matrix, offX, offY) {
+            for (let r = 0; r < matrix.length; r++) {
+                for (let c = 0; c < matrix[0].length; c++) {
+                    if (matrix[r][c] !== 0) {
+                        const boardX = offX + c;
+                        const boardY = offY + r;
+                        // batas kiri/kanan/bawah atau board terisi
+                        if (boardX < 0 || boardX >= COLS || boardY >= ROWS || boardY < 0) {
+                            return true;
+                        }
+                        if (boardY >= 0 && board[boardY][boardX] !== 0) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        // tempelkan currentPiece ke board (untuk lock)
+        function mergePieceToBoard() {
+            if (!currentPiece) return;
+            for (let r = 0; r < currentPiece.matrix.length; r++) {
+                for (let c = 0; c < currentPiece.matrix[0].length; c++) {
+                    if (currentPiece.matrix[r][c] !== 0) {
+                        const boardX = currentPiece.x + c;
+                        const boardY = currentPiece.y + r;
+                        if (boardY >= 0 && boardY < ROWS && boardX >= 0 && boardX < COLS) {
+                            board[boardY][boardX] = currentPiece.color;
+                        }
+                    }
+                }
+            }
+        }
+
+        // hapus baris penuh dan update score
+        function clearFullRows() {
+            let rowsCleared = 0;
+            for (let row = ROWS - 1; row >= 0; ) {
+                if (board[row].every(cell => cell !== 0)) {
+                    // hapus baris
+                    for (let r = row; r > 0; r--) {
+                        board[r] = [...board[r-1]];
+                    }
+                    board[0] = Array(COLS).fill(0); // baris paling atas kosong
+                    rowsCleared++;
+                    // tetap di baris yang sama karena baris di atas bergeser
+                } else {
+                    row--;
+                }
+            }
+
+            if (rowsCleared > 0) {
+                // sistem scoring classic
+                const points = [0, 40, 100, 300, 1200];
+                const multiplier = (rowsCleared <= 4) ? points[rowsCleared] : 1200;
+                score += multiplier;
+                updateScore();
+            }
+        }
+
+        // update tampilan score
+        function updateScore() {
+            scoreSpan.textContent = score;
+        }
+
+        // lock piece (merge + spawn berikutnya)
+        function lockPiece() {
+            if (!currentPiece || gameOver) return;
+            mergePieceToBoard();
+            clearFullRows();
+
+            // spawn piece baru
+            spawnNewPiece();
+            if (gameOver) {
+                drawAll();
+            }
+        }
+
+        // gerak piece (dx, dy) kalau bisa
+        function movePiece(dx, dy) {
+            if (!currentPiece || gameOver) return false;
+            const newX = currentPiece.x + dx;
+            const newY = currentPiece.y + dy;
+            if (!collision(currentPiece.matrix, newX, newY)) {
+                currentPiece.x = newX;
+                currentPiece.y = newY;
+                drawAll();
+                return true;
+            }
+            // jika dy = 1 (turun) dan mentok, langsung lock
+            if (dy === 1) {
+                lockPiece();
+                drawAll();
+            }
+            return false;
+        }
+
+        // rotasi piece (putar 90° searah jarum jam)
+        function rotatePiece() {
+            if (!currentPiece || gameOver) return;
+            // rotasi matrix 90 derajat
+            const matrix = currentPiece.matrix;
+            const rotated = matrix[0].map((_, idx) => matrix.map(row => row[idx]).reverse()); // clockwise
+
+            // cek collision dengan posisi sama
+            if (!collision(rotated, currentPiece.x, currentPiece.y)) {
+                currentPiece.matrix = rotated;
+            } else {
+                // coba geser kiri/kanan (wallkick sederhana)
+                if (!collision(rotated, currentPiece.x + 1, currentPiece.y)) {
+                    currentPiece.matrix = rotated;
+                    currentPiece.x += 1;
+                } else if (!collision(rotated, currentPiece.x - 1, currentPiece.y)) {
+                    currentPiece.matrix = rotated;
+                    currentPiece.x -= 1;
+                }
+                // jika tidak berhasil, batal rotasi
+            }
+            drawAll();
+        }
+
+        // hard drop langsung jatuhkan
+        function hardDrop() {
+            if (!currentPiece || gameOver) return;
+            while (!collision(currentPiece.matrix, currentPiece.x, currentPiece.y + 1)) {
+                currentPiece.y++;
+            }
+            lockPiece();  // lock dan spawn baru
+            drawAll();
+        }
+
+        // menggambar semua (board + current piece)
+        function drawBoard() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // draw grid (tipis)
+            ctx.strokeStyle = '#25344f';
+            ctx.lineWidth = 0.6;
+            for (let i = 0; i <= COLS; i++) {
+                ctx.beginPath();
+                ctx.strokeStyle = '#2f3f5c';
+                ctx.moveTo(i * BLOCK_SIZE, 0);
+                ctx.lineTo(i * BLOCK_SIZE, canvas.height);
+                ctx.stroke();
+            }
+            for (let i = 0; i <= ROWS; i++) {
+                ctx.beginPath();
+                ctx.strokeStyle = '#2f3f5c';
+                ctx.moveTo(0, i * BLOCK_SIZE);
+                ctx.lineTo(canvas.width, i * BLOCK_SIZE);
+                ctx.stroke();
+            }
+
+            // draw board (sel-sel terisi)
+            for (let row = 0; row < ROWS; row++) {
+                for (let col = 0; col < COLS; col++) {
+                    const color = board[row][col];
+                    if (color !== 0) {
+                        ctx.fillStyle = color;
+                        ctx.shadowColor = '#ffffff30';
+                        ctx.shadowBlur = 8;
+                        ctx.fillRect(col * BLOCK_SIZE, row * BLOCK_SIZE, BLOCK_SIZE-1, BLOCK_SIZE-1);
+                        ctx.shadowColor = 'transparent';
+                        // efek highlight
+                        ctx.fillStyle = 'rgba(255,255,255,0.1)';
+                        ctx.fillRect(col * BLOCK_SIZE+2, row * BLOCK_SIZE+2, BLOCK_SIZE-5, 4);
+                    } else {
+                        // sedikit efek kotak kosong
+                        ctx.fillStyle = '#0c1422';
+                        ctx.fillRect(col * BLOCK_SIZE, row * BLOCK_SIZE, BLOCK_SIZE-1, BLOCK_SIZE-1);
+                    }
+                }
+            }
+
+            // draw current piece (dengan sedikit transparan)
+            if (currentPiece && !gameOver) {
+                const piece = currentPiece;
+                for (let r = 0; r < piece.matrix.length; r++) {
+                    for (let c = 0; c < piece.matrix[0].length; c++) {
+                        if (piece.matrix[r][c] !== 0) {
+                            const x = (piece.x + c) * BLOCK_SIZE;
+                            const y = (piece.y + r) * BLOCK_SIZE;
+                            ctx.fillStyle = piece.color;
+                            ctx.shadowBlur = 12;
+                            ctx.shadowColor = '#b0d0ff';
+                            ctx.fillRect(x, y, BLOCK_SIZE-1, BLOCK_SIZE-1);
+                            ctx.shadowColor = 'transparent';
+                            ctx.fillStyle = 'rgba(255,255,255,0.2)';
+                            ctx.fillRect(x+3, y+3, BLOCK_SIZE-8, 5);
+                        }
+                    }
+                }
+            }
+
+            if (gameOver) {
+                ctx.fillStyle = '#000000aa';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 22px "Segoe UI", monospace';
+                ctx.shadowColor = '#000';
+                ctx.shadowBlur = 10;
+                ctx.fillText('GAME OVER', 20, 300);
+                ctx.shadowColor = 'transparent';
+            }
+        }
+
+        function drawNext() {
+            nextCtx.clearRect(0, 0, 120, 120);
+            nextCtx.fillStyle = '#0b121e';
+            nextCtx.fillRect(0, 0, 120, 120);
+
+            if (nextPiece) {
+                const matrix = nextPiece.matrix;
+                const color = nextPiece.color;
+                const cols = matrix[0].length;
+                const rows = matrix.length;
+                const block = 24; // ukuran blok di kanvas 120/5 ≈24, tetapi kita tengahkan
+                const offsetX = (120 - cols * block) / 2;
+                const offsetY = (120 - rows * block) / 2;
+
+                for (let r = 0; r < rows; r++) {
+                    for (let c = 0; c < cols; c++) {
+                        if (matrix[r][c] !== 0) {
+                            nextCtx.fillStyle = color;
+                            nextCtx.shadowBlur = 8;
+                            nextCtx.shadowColor = '#b0c0e0';
+                            nextCtx.fillRect(offsetX + c * block, offsetY + r * block, block-1, block-1);
+                            nextCtx.shadowColor = 'transparent';
+                            nextCtx.fillStyle = 'rgba(255,255,255,0.15)';
+                            nextCtx.fillRect(offsetX + c * block+3, offsetY + r * block+3, block-8, 5);
+                        }
+                    }
+                }
+            }
+        }
+
+        function drawAll() {
+            drawBoard();
+            drawNext();
+        }
+
+        // ---------- loop game (turun otomatis) ----------
+        function gameTick() {
+            if (!gameOver && currentPiece) {
+                movePiece(0, 1); // turun 1 langkah (didalam sudah ada lock jika perlu)
+                drawAll();
+            } else if (gameOver) {
+                if (gameInterval) {
+                    clearInterval(gameInterval);
+                    gameInterval = null;
+                }
+                drawAll();
+            }
+        }
+
+        // start / restart game
+        function startNewGame() {
+            if (gameInterval) {
+                clearInterval(gameInterval);
+                gameInterval = null;
+            }
+            initBoard();
+            score = 0;
+            updateScore();
+            gameOver = false;
+
+            // siapkan next dan spawn piece pertama
+            nextPiece = randomPiece();
+            spawnNewPiece();  // mengisi currentPiece dari next dan generate next baru
+
+            // jika spawn langsung gameOver (sangat jarang, tp mungkin)
+            if (gameOver) {
+                drawAll();
+                return;
+            }
+
+            gameInterval = setInterval(gameTick, BASE_INTERVAL);
+            drawAll();
+        }
+
+        // ---------- EVENT LISTENERS ----------
+        document.addEventListener('keydown', (e) => {
+            const key = e.key;
+            // cegah scroll
+            if ([" ", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(key)) {
+                e.preventDefault();
+            }
+            if (gameOver) return;
+
+            switch (key) {
+                case 'ArrowLeft':  movePiece(-1, 0); break;
+                case 'ArrowRight': movePiece(1, 0); break;
+                case 'ArrowDown':  movePiece(0, 1); break;
+                case 'ArrowUp':    rotatePiece(); break;
+                case ' ':          hardDrop(); break;
+                default: return;
+            }
+            drawAll();
+        });
+
+        document.getElementById('newGameBtn').addEventListener('click', () => {
+            startNewGame();
+        });
+
+        // cegah agar tombol panah tidak menggeser halaman (juga untuk spasi)
+        window.addEventListener('keydown', (e) => {
+            if (e.key === ' ' || e.key.startsWith('Arrow')) {
+                e.preventDefault();
+            }
+        }, {passive: false});
+
+        // langsung mulai game saat halaman dimuat
+        startNewGame();
+    })();
+</script>
 </body>
 </html>
